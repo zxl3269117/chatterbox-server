@@ -4,7 +4,7 @@
 
 var Parse = {
 
-  server: 'http://127.0.0.1:3000/chatterbox/messages/',
+  server: 'http://127.0.0.1:3000/classes/messages',
   // server: 'http://127.0.0.1:3000/chatterbox/messages/',
 
   create: function(message, successCB, errorCB = null) {

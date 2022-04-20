@@ -25,7 +25,6 @@ var requestHandler = function(request, response) {
   // http://nodejs.org/documentation/api/
   var queryString = url.parse(request.url, true);
   console.log(queryString);
-
   // Do some basic logging.
   //
   // Adding more logging to your server can be an easy way to get passive
@@ -33,7 +32,7 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
-  if (queryString.pathname === '/chatterbox/messages/') {
+  if (queryString.pathname === '/classes/messages') {
     // The outgoing status.
     var statusCode = 200;
 
@@ -44,8 +43,9 @@ var requestHandler = function(request, response) {
     //
     // You will need to change this if you are sending something
     // other than plain text, like JSON or HTML.
-    headers['Content-Type'] = 'text/plain';
+    headers['Content-Type'] = 'application/json';
 
+    var data = {a: 1};
     // .writeHead() writes to the request line and headers of the response,
     // which includes the status and all headers.
     response.writeHead(statusCode, headers);
@@ -57,7 +57,8 @@ var requestHandler = function(request, response) {
     //
     // Calling .end "flushes" the response's internal buffer, forcing
     // node to actually send all the data over to the client.
-    response.end('Hello, World!');
+    console.log('response ran');
+    response.end(JSON.stringify(data));
   }
 
 };
