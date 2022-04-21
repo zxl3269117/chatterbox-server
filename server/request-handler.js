@@ -12,7 +12,9 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 var url = require('url');
+var qs = require('querystring');
 
+var dataset = {results: []};
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -23,8 +25,7 @@ var requestHandler = function(request, response) {
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
-  var queryString = url.parse(request.url, true);
-  console.log(queryString);
+
   // Do some basic logging.
   //
   // Adding more logging to your server can be an easy way to get passive
@@ -32,9 +33,12 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
+  var queryString = url.parse(request.url, true);
+  console.log(queryString);
+
   if (queryString.pathname === '/classes/messages') {
     // The outgoing status.
-    var statusCode = 200;
+    var statusCode;
 
     // See the note below about CORS headers.
     var headers = defaultCorsHeaders;
@@ -45,10 +49,28 @@ var requestHandler = function(request, response) {
     // other than plain text, like JSON or HTML.
     headers['Content-Type'] = 'application/json';
 
-    var data = {a: 1};
+
     // .writeHead() writes to the request line and headers of the response,
     // which includes the status and all headers.
-    response.writeHead(statusCode, headers);
+    if (request.method === 'GET') {
+      statusCode = 200;
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(dataset));
+    } else if (request.method === 'POST') {
+      statusCode = 201;
+      var body = '';
+      request.on('data', function (data) {
+        body += data;
+      });
+
+      request.on('end', function () {
+        var POST = JSON.parse(body);
+        dataset.results.push(POST);
+        response.writeHead(statusCode, headers);
+        response.end(JSON.stringify(dataset));
+      });
+    }
+
 
     // Make sure to always call response.end() - Node may not send
     // anything back to the client until you do. The string you pass to
@@ -58,7 +80,10 @@ var requestHandler = function(request, response) {
     // Calling .end "flushes" the response's internal buffer, forcing
     // node to actually send all the data over to the client.
     console.log('response ran');
-    response.end(JSON.stringify(data));
+
+  } else {
+    response.writeHead(404, headers);
+    response.end();
   }
 
 };
@@ -79,4 +104,3 @@ var defaultCorsHeaders = {
   'access-control-allow-headers': 'content-type, accept',
   'access-control-max-age': 10 // Seconds.
 };
-
