@@ -1,6 +1,8 @@
-var handler = require('../request-handler');
+var handler = {};
+handler.requestHandler = require('../request-handler');
 var expect = require('chai').expect;
 var stubs = require('./Stubs');
+
 
 describe('Node Server Request Listener Function', function() {
   it('Should answer GET requests for /classes/messages with a 200 status code', function() {

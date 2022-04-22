@@ -34,7 +34,6 @@ var requestHandler = function(request, response) {
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
   var queryString = url.parse(request.url, true);
-  console.log(queryString);
 
   if (queryString.pathname === '/classes/messages') {
     // The outgoing status.
@@ -89,6 +88,7 @@ var requestHandler = function(request, response) {
 };
 
 module.exports = requestHandler;
+
 // These headers will allow Cross-Origin Resource Sharing (CORS).
 // This code allows this server to talk to websites that
 // are on different domains, for instance, your chat client.
