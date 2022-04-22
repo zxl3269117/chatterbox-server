@@ -52,6 +52,7 @@ var requestHandler = function(request, response) {
     // .writeHead() writes to the request line and headers of the response,
     // which includes the status and all headers.
     if (request.method === 'GET') {
+
       statusCode = 200;
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(dataset));
@@ -60,11 +61,13 @@ var requestHandler = function(request, response) {
       var body = '';
       request.on('data', function (data) {
         body += data;
+        console.log(body);
       });
 
       request.on('end', function () {
         var POST = JSON.parse(body);
         dataset.results.push(POST);
+        console.log(dataset);
         response.writeHead(statusCode, headers);
         response.end(JSON.stringify(dataset));
       });
