@@ -10,6 +10,7 @@ describe('Node Server Request Listener Function', function() {
     // but we want to test our function's behavior totally independent of the server code
     var req = new stubs.request('/classes/messages', 'GET');
     var res = new stubs.response();
+    console.log('1');
 
     handler.requestHandler(req, res);
 
@@ -61,11 +62,12 @@ describe('Node Server Request Listener Function', function() {
     handler.requestHandler(req, res);
 
     // Expect 201 Created response status
+    console.log('res', res._data);
     expect(res._responseCode).to.equal(201);
 
     // Testing for a newline isn't a valid test
     // TODO: Replace with with a valid test
-    // expect(res._data).to.equal(JSON.stringify('\n'));
+    expect(res._data).to.equal(JSON.stringify({results: [stubMsg]}));
     expect(res._ended).to.equal(true);
   });
 
@@ -102,6 +104,16 @@ describe('Node Server Request Listener Function', function() {
     handler.requestHandler(req, res);
 
     expect(res._responseCode).to.equal(404);
+    expect(res._ended).to.equal(true);
+  });
+
+  it('Should accept a OPTIONS request', function() {
+    var req = new stubs.request('/classes/messages', 'OPTIONS');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
     expect(res._ended).to.equal(true);
   });
 

@@ -56,21 +56,26 @@ var requestHandler = function(request, response) {
       statusCode = 200;
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(dataset));
+
     } else if (request.method === 'POST') {
       statusCode = 201;
       var body = '';
       request.on('data', function (data) {
         body += data;
-        console.log(body);
       });
 
       request.on('end', function () {
         var POST = JSON.parse(body);
         dataset.results.push(POST);
-        console.log(dataset);
         response.writeHead(statusCode, headers);
         response.end(JSON.stringify(dataset));
       });
+
+    } else if (request.method === 'OPTIONS') {
+      statusCode = 200;
+      headers['Allow'] = 'GET, POST, OPTIONS';
+      response.writeHead(statusCode, headers);
+      response.end();
     }
 
 
@@ -81,7 +86,6 @@ var requestHandler = function(request, response) {
     //
     // Calling .end "flushes" the response's internal buffer, forcing
     // node to actually send all the data over to the client.
-    console.log('response ran');
 
   } else {
     response.writeHead(404, headers);
